@@ -1,0 +1,45 @@
+{% extends 'authentication/layout/layout.html' %}
+{% load static %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block link %}
+    <link rel="stylesheet" type="text/css" href="{% static 'authentication/css/customer-login.css' %}" />
+{% endblock link %}
+
+{% block title %}Login{% endblock title %}
+
+{% block body %}
+    <div class="ring">
+        <i style="--clr:#00ff0a;"></i>
+        <i style="--clr:#ff0057;"></i>
+        <i style="--clr:#fffd44;"></i>
+        <div class="login" style="transform: translateY(-15px)">
+            <h2>Login</h2>
+            <form id="login-form" method="post" action="{% url 'customer-login' %}">
+                {% csrf_token %}
+                <div class="inputBx">
+                    <input type="text" name="username" placeholder="Username">
+                </div>
+                <br>
+                <div class="inputBx">
+                    <input type="password" name="password" placeholder="Password">
+                </div>
+                <br>
+                <div class="inputBx">
+                    <input type="submit" value="Sign in">
+                </div>
+            </form>
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+                <div class="socialaccount_providers">
+                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                </div>
+            {% endif %} 
+            <div class="links">
+                <a href="#">Forgot Password</a>
+                <a href="{% url 'signup' %}">Sign up</a>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

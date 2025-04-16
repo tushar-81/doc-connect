@@ -1,0 +1,216 @@
+{% extends 'docAI/layout/layout.html' %} {% load static %} {% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'docAI/layout.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'docAI/test_detail.css' %}" />
+{% endblock link %} {% block title %}Test {{ test.id }}{% endblock title %} 
+
+{% block style %}
+<style>
+    #message-area {
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        border-radius: 16px;
+        padding: 10px;
+        height: 100%;
+        width: 95%;
+    }
+    .message_area_top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .message-container {
+        overflow-y: auto;
+        height: 82.5%;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #ccc;
+    }
+    .message-container::-webkit-scrollbar {
+        display: none;
+    }
+    .message {
+        clear: both;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .sent {
+        background-color: #DCF8C6;
+        float: right;
+    }
+    .received {
+        background-color: #FFFFFF; 
+        float: left;
+    }
+    .messages-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>
+{% endblock style %}
+
+{% block body %}
+    {% if user.user_type == 'customer' or user.user_type == 'Customer' %}
+        <div class="message_test_div">
+            <div class="projects-section" style="display: flex; justify-content: space-between; flex-direction: column; align-items: center; height: 85vh; padding: 20px;">
+                <div class="projects-section-header" style="display: flex; justify-content: space-between; width: 100%; column; align-items: center;">
+                    <p>Test {{ test.id }}</p>
+                    <p class="time" id="current-time">Date: </p>
+                </div>
+                <div style="display: flex; justify-content: center; width: 100%; flex-direction: column; align-items: center; height: 100%">
+                    {% if report.status == 'submission' or report.status == 'Submission' %}
+                        <h2>Report is Yet to be Prepared</h2>
+                    {% elif report.status == 'evaluation' or report.status == 'Evaluation' %}
+                        <h2>Report is Under Evaluation</h2>
+                    {% elif report.status == 'completed' or report.status == 'Completed' %}
+                        <h1 style="padding-top: 40px;">Report ({{ test.type }} test) of {{ request.user.username }} is Complete</h1>
+                        <div style="padding: 20px; width: 60%; display: flex; flex-direction: column; align-items: center;">
+                            <span style="font-size: 20px; text-align: center;">
+                                Your Report is finalized by the concerned doctor
+                                Click the Preview button to view the Report
+                            </span>
+                        </div>
+                        <div>
+                            <button class="btn" style="background-color: #4681f4;" id="preview_pdf" type=submit>Preview</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="messages-section" style="padding: 15px 0 15px 0">
+                <button class="messages-close">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-x-circle"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                </button>
+                <div id="message-area" class="messages">
+                    <div class="message_area_top">
+                        <span style="font-weight: 600px; font-size: 18px"><b>Chat with {{ test.assigned_to.username }}</b></span>
+                    </div>
+                    <div class="message-container">
+                        {% for message in messages %}
+                            {% if message.sender == user %}
+                                <div class="message sent">{{ message.content }}</div>
+                            {% else %}
+                                <div class="message received">{{ message.content }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+                <form class="message_form" id="message-form" style="display: flex; justify-content: space-between; align-items: center; transform: translateY(-52.5px); width: 87.5%;">
+                    {% csrf_token %}
+                    <input type="text" id="message-input" name="content" placeholder="Type your message" style="margin: 0 5px; flex: 1; padding: 8px 5px">
+                    <button type="submit" style="padding: 10px 16px; border-radius: 4px; border: none; color: white; background-color: #5dbea3">Send</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock body %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#message-form').submit(function(event){
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: window.location.href,
+                    data: formData,
+                    success: function(response){
+                        if (response && response.content) {
+                            var newMessage = '<div class="message sent">' + response.content + '</div>';
+                            $('.message-container').append(newMessage);
+                            $('#message-input').val('');
+                            $('.message-container').scrollTop($('.message-container')[0].scrollHeight);
+                        } else {
+                            console.log(response)
+                            console.log('Invalid response from server');
+                        }
+                    },
+                    error: function(xhr, errmsg, err){
+                        console.log(xhr.status + ": " + xhr.responseText);
+                    }
+                });
+            });
+        });
+        $('#preview_pdf').click(function (event) {
+            console.log('Preview PDF Button was clicked');
+            const test_id = {{ test.id }};
+            const test_type = '{{ test.type }}';
+            const receiver_id = {{ receiver.id }};
+            const url = `http://localhost:8000/doctor_pdf_preview_page/test/${test_id}/type/${test_type}/applicant/${receiver_id}/`;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function(response) {
+                    console.log('Form submitted successfully:', response);
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error submitting form:', error);
+                }
+            })
+        })
+        const fetchMessages = (test_id) => {
+            $.ajax({
+                type: 'GET',
+                url: window.location.href,
+                success: function(response) {
+                    const $responseContainer = $('<div>').html(response);
+                        const $messageContainer = $responseContainer.find('.message-container');
+                        const $currentMessageContainer = $('.message-container');
+                        
+                        const newMessagesAdded = $currentMessageContainer.html() !== $messageContainer.html();
+                        $currentMessageContainer.html($messageContainer.html());
+                        
+                        if (newMessagesAdded) {
+                            $currentMessageContainer.scrollTop($currentMessageContainer[0].scrollHeight);
+                        }
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        };
+        setInterval(fetchMessages, 5000);
+    </script>
+    <script>
+        function updateDateTime() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1; 
+            var day = now.getDate();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var formattedDateTime = year + '-' + addLeadingZero(month) + '-' + addLeadingZero(day) + ' ' + 
+                                    addLeadingZero(hours) + ':' + addLeadingZero(minutes) + ':' + addLeadingZero(seconds);
+            document.getElementById('current-time').textContent = formattedDateTime;
+        }
+        function addLeadingZero(number) {
+            return (number < 10 ? '0' : '') + number;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+{% endblock script %}
