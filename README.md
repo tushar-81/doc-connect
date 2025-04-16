@@ -45,10 +45,7 @@ To use DocAI, follow these steps:
 13. Now again in the admin dashboard, `http://localhost:8000/admin`, create a Test Application from left sidebar (Means User Applied for a Test), for the previously created customer account with the tests created by the doctor.
 14. Now you can operate from the web app only.
 
-## 📖 Video Demonstration and Presentation
 
-- [Presentation](https://docs.google.com/presentation/d/1nrtJG3l_0ww4Z69G-tgB3c0DvNjrUWXLFO4da1JiTXo/edit?usp=sharing)
-- [Video Presentation](https://drive.google.com/drive/folders/1tt6ddJLIdU-V4CypO0hqysUdEBw2kHub?usp=drive_link)
 
 
 ## 🛠️ Tech Stack
@@ -111,6 +108,3 @@ To use DocAI, follow these steps:
 
 
 
-## ✨ Contributors-
-- [Siddhant Gupta](https://github.com/SidWorks01)
-- [Sajal Chauhan](https://github.com/sajji18)
