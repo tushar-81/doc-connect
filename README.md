@@ -1,14 +1,14 @@
-![logo](https://github.com/sajji18/TinkerQuest-24/blob/main/media/logo.jpeg)
+
 
 <div align="center">
 
 </div>
 
-# ⛑️ DocAI
+# ⛑️ DocConnect
 
 <br>
 
-## 💻 About DocAI
+## 💻 About DocConnect
 
 ### Features
 DocAI streamlines the report-making process by automating key tasks while ensuring the authenticity of medical information. Here's how our application addresses these challenges:
@@ -29,7 +29,7 @@ DocAI streamlines the report-making process by automating key tasks while ensuri
 To use DocAI, follow these steps:
 1. Clone this repository.
 ```bash
-  git clone https://github.com/sajji18/smart-lab-report.git
+  git clone https://github.com/tushar-81/doc-connect
 ```
 2. Setup virtual enviroment with: `python -m venv <env_name>` and activate it using `source <env_name>/Scripts/activate` on bash. Now, Install the required dependencies using `pip install -r requirements.txt`.
 3. Set up your Google OAuth credentials from the Google API Console and download the required secrets.json. Create your own `secrets.json` in the base directory and exactly follow the .example.secret.json for format.
