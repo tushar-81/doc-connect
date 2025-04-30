@@ -11,7 +11,7 @@
 ## 💻 About DocConnect
 
 ### Features
-DocAI streamlines the report-making process by automating key tasks while ensuring the authenticity of medical information. Here's how our application addresses these challenges:
+DocConnect streamlines the report-making process by automating key tasks while ensuring the authenticity of medical information. Here's how our application addresses these challenges:
 
 1. **Automated Report Generation**: DocAI leverages natural language processing (NLP) techniques to automate report creation. Doctors can focus on patient care while our system generates accurate and concise reports.
 
